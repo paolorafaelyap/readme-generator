@@ -3,6 +3,7 @@ const fs = require('fs');
 const util = require('util');
 const { get } = require('http');
 const getApi = require('./api');
+const generateMarkdown = require('./utils/generateMarkdown.js')
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
