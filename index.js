@@ -1,6 +1,8 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const util = require('util');
+const { get } = require('http');
+const getApi = require('./api');
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -70,12 +72,17 @@ function writeToFile(fileName, data) {
 const init = async () => {
   //for prompting questions
   try {
-  const yourResponses = await inquirer.prompt(questions);
-  console.log("You responded with:", yourResponses);
+  const yourInput = await inquirer.prompt(questions);
+  console.log("You responded with:", yourInput);
   console.log("Now getting Github data");
-
-  const yourInfo = await writeFileAsync('readMe.md', yourResponses);
+  // github api to get user info
+  const yourInfo = await getApi.getUser(yourInput);
   console.log("Github user info: ", yourInfo);
+  //markdown is populated with user input and user info
+  const markdown = generateMarkdown(yourInput, yourInfo);
+  console.log(markdown);
+  //the markdown is then transferred over to the README.md file
+  await writeFileAsync('exampleReadMe.md', markdown);
   } catch (err) {
     console.log(err)
   }
